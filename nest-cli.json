@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/cqrs-todo-new/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/cqrs-todo-new/tsconfig.app.json"
+  },
+  "projects": {
+    "command": {
+      "type": "application",
+      "root": "apps/command",
+      "entryFile": "main",
+      "sourceRoot": "apps/command/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/command/tsconfig.app.json"
+      }
+    },
+    "eventstore": {
+      "type": "library",
+      "root": "libs/eventstore",
+      "entryFile": "index",
+      "sourceRoot": "libs/eventstore/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eventstore/tsconfig.lib.json"
+      }
+    },
+    "query": {
+      "type": "application",
+      "root": "apps/query",
+      "entryFile": "main",
+      "sourceRoot": "apps/query/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/query/tsconfig.app.json"
+      }
+    },
+    "shared": {
+      "type": "library",
+      "root": "libs/shared",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared/tsconfig.lib.json"
+      }
+    },
+    "todo-common": {
+      "type": "library",
+      "root": "libs/todo-common",
+      "entryFile": "index",
+      "sourceRoot": "libs/todo-common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/todo-common/tsconfig.lib.json"
+      }
+    }
+  },
+  "monorepo": true
+}
