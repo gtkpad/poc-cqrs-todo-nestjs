@@ -3,6 +3,8 @@ import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
 import { CreateTodoCommand } from '../../domain/commands/create-todo.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { RenameTodoCommand } from '../../domain/commands/rename-todo.command';
+import { MarkTodoAsDoneCommand } from '../../domain/commands/mark-todo-as-done.command';
+import { MarkTodoAsUndoneCommand } from '../../domain/commands/mark-todo-as-undone.command';
 
 @Controller('todo')
 export class TodoController {
@@ -17,5 +19,15 @@ export class TodoController {
   @Patch(':id/name')
   async renameTodo(@Param('id') id: string, @Body() data: { name: string }) {
     return await this.commandBus.execute(new RenameTodoCommand(id, data.name));
+  }
+
+  @Patch(':id/done')
+  async markTodoAsDone(@Param('id') id: string) {
+    return await this.commandBus.execute(new MarkTodoAsDoneCommand(id));
+  }
+
+  @Patch(':id/undone')
+  async markTodoAsUndone(@Param('id') id: string) {
+    return await this.commandBus.execute(new MarkTodoAsUndoneCommand(id));
   }
 }

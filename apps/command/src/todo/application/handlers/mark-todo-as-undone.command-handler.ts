@@ -1,11 +1,23 @@
 import { CommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { MarkTodoAsUndoneCommand } from '../../domain/commands/mark-todo-as-undone.command';
+import { AggregateRehydrator } from '@lib/shared';
+import { Todo } from '../../domain/entities/todo.entity';
 
 @CommandHandler(MarkTodoAsUndoneCommand)
 export class MarkTodoAsUndoneCommandHandler {
   private readonly logger = new Logger(MarkTodoAsUndoneCommandHandler.name);
-  execute(command: MarkTodoAsUndoneCommand) {
-    this.logger.log(`Marking todo with id: ${command.id} as undone`);
+
+  constructor(private readonly aggregateRehydrator: AggregateRehydrator) {}
+  async execute(command: MarkTodoAsUndoneCommand) {
+    const todo = await this.aggregateRehydrator.rehydrate(command.id, Todo);
+
+    todo.markAsUndone();
+
+    todo.commit();
+
+    this.logger.log(`Marked todo with id: ${command.id} as undone`);
+
+    return todo;
   }
 }
