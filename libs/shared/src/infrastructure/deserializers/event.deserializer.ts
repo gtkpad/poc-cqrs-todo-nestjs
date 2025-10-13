@@ -6,6 +6,7 @@ import { Injectable, Type } from '@nestjs/common';
 import { SerializableEvent } from '../../domain/interfaces/serializable-event';
 import { EventClsRegistry } from '../event-cls.registry';
 import { Event } from '../schemas/event.schema';
+import { BaseEvent } from '@lib/shared/domain';
 
 @Injectable()
 export class EventDeserializer {
@@ -15,6 +16,11 @@ export class EventDeserializer {
       ...event,
       data: this.instantiateSerializedEvent(eventCls, event.data),
     };
+  }
+
+  deserializeEvent<T extends BaseEvent>(event: Event): T {
+    const eventCls = this.getEventClassByType(event.type);
+    return this.instantiateSerializedEvent(eventCls, event.data) as T;
   }
 
   getEventClassByType(type: string) {

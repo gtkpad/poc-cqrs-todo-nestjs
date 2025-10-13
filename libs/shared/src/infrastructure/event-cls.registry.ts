@@ -3,9 +3,11 @@
 import { Type } from '@nestjs/common';
 
 export class EventClsRegistry {
-  private static readonly eventClsMap = new Map<string, any>();
+  public static readonly eventClsMap = new Map<string, any>();
 
   static add(eventCls: Type): void {
+    console.log(`Adding event class for type :`, this.eventClsMap);
+
     this.eventClsMap.set(eventCls.name, eventCls);
   }
 

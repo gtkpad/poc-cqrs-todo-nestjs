@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import {
   KurrentDBClient,
   ReadStreamOptions,
   StreamNotFoundError,
+  WrongExpectedVersionError,
   ResolvedEvent,
   jsonEvent,
   AppendStreamState,
@@ -38,24 +37,29 @@ export class KurrentEventStore implements EventStore {
       return;
     }
 
-    console.log('Events to persist:', events);
-
     const kurrentEvents = events.map((event) => jsonEvent(event));
-
-    console.log('Kurrent events to append:', kurrentEvents);
 
     try {
       await this.client.appendToStream(streamId, kurrentEvents, {
-        streamState: Number.isInteger(expectedVersion)
-          ? (expectedVersion as unknown as AppendStreamState)
-          : 'no_stream',
+        // streamState: 2 as unknown as AppendStreamState,
+        streamState:
+          expectedVersion !== undefined && expectedVersion >= 0
+            ? (expectedVersion as unknown as AppendStreamState)
+            : 'no_stream',
       });
       this.logger.debug(`Events appended to stream ${streamId} successfully.`);
     } catch (err) {
+      if (err instanceof WrongExpectedVersionError) {
+        this.logger.warn(`Version conflict for stream ${streamId}`);
+        throw new Error(`Version conflict for stream ${streamId}`);
+
+        // throw new AggregateStaleException(
+        //   `Aggregate ${streamId} is stale: ${err.message}`,
+        // );
+      }
       this.logger.error(
         `Error appending events to stream ${streamId}: ${err.message}`,
       );
-      this.logger.error(err);
 
       throw err;
     }

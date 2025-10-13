@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { SerializableEvent } from './interfaces/serializable-event';
 import { Notification } from './validations/notification';
@@ -12,7 +10,7 @@ export class AggregateRoot extends NestJSAggregateRoot {
   public id: string;
   // private _notification: Notification[] = [];
 
-  private [VERSION] = new Version(0);
+  private [VERSION] = new Version(-1);
 
   get version(): Version {
     return this[VERSION];

@@ -18,6 +18,14 @@ services:
         source: kurrentdb-volume-logs
         target: /var/log/kurrentdb
 
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodbdata:/data/db
+
 volumes:
   kurrentdb-volume-data:
   kurrentdb-volume-logs:
+  mongodbdata:

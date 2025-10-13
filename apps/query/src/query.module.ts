@@ -1,10 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Module } from '@nestjs/common';
-import { QueryController } from './query.controller';
-import { QueryService } from './query.service';
+import { TodoModule } from './todo/todo.module';
+import { CqrsQueryModule } from '@lib/shared/cqrs-query.module';
+import { CqrsModule } from '@nestjs/cqrs';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [],
-  controllers: [QueryController],
-  providers: [QueryService],
+  imports: [
+    CqrsModule.forRoot(),
+    CqrsQueryModule,
+    MongooseModule.forRoot('mongodb://localhost/todo-api'),
+    TodoModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class QueryModule {}
