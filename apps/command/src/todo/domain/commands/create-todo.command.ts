@@ -1,6 +1,6 @@
 export class CreateTodoCommand {
-  public readonly name: string;
-  public readonly date: Date;
+  public name: string;
+  public date: Date;
 
   constructor(name: string, date: Date) {
     this.name = name;

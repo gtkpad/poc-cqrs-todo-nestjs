@@ -11,6 +11,9 @@ export class CreateTodoCommandHandler {
   private readonly logger = new Logger(CreateTodoCommandHandler.name);
   async execute(command: CreateTodoCommand): Promise<Todo> {
     this.logger.debug(`Received command ${command.constructor.name}`);
+    this.logger.log(
+      `Creating todo with name: ${command.name} and date: ${command.date.toISOString()}`,
+    );
 
     const todo = TodoFactory.create(command.name, command.date);
     this.eventPublisher.mergeObjectContext(todo);
