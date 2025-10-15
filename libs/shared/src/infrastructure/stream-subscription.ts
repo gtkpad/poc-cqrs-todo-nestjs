@@ -63,13 +63,10 @@ export abstract class SubscriptionService
         `Persistent subscription group "${groupName}" for $all with filter "${this.preffixFilter}" created.`,
       );
     } catch (err: any) {
-      // Trata o caso de já existir
       if (err.type === 'persistent-subscription-exists') {
         this.logger.warn(
           `Persistent subscription group "${groupName}" already exists — skipping creation.`,
         );
-        // (Opcional) você poderia chamar update, se quiser garantir que configurações novas sejam aplicadas:
-        // await this.client.updatePersistentSubscriptionToAll(groupName, settings, { filter });
       } else {
         this.logger.error(
           `Error creating filtered persistent subscription "${groupName}"`,

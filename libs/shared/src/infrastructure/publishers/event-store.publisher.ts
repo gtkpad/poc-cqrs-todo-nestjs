@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { EventBus, IEventPublisher } from '@nestjs/cqrs';
 
@@ -35,8 +36,6 @@ export class EventStorePublisher
     const serializableEvents = events.map((event) =>
       this.eventSerializer.serialize(event, dispatcher),
     );
-
-    console.log('version in publishAll:', dispatcher.version.value);
 
     return await this.eventStore.persist(
       dispatcher.stream_id,
