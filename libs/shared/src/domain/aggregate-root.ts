@@ -5,6 +5,7 @@ import { AggregateRoot as NestJSAggregateRoot } from '@nestjs/cqrs';
 import { Version } from './value-objects/version.vo';
 import { INotifiable } from './validations/notifiable.interface';
 import { AggregateInvalidError } from './errors/aggregate-invalid.error';
+import { ClassValidatorFields } from './validations/class-validator-fields';
 
 const VERSION = Symbol('version');
 
@@ -40,6 +41,17 @@ export class AggregateRoot extends NestJSAggregateRoot implements INotifiable {
       name = Object.getPrototypeOf(this.constructor).name;
     }
     return `${name}:${this.id}`;
+  }
+
+  public validate(
+    validator: ClassValidatorFields,
+    fields: string[] = [],
+  ): boolean {
+    this.clearNotifications();
+
+    this._notification = validator.validate(this, fields);
+
+    return this.isValid;
   }
 
   public loadFromHistory(history: SerializableEvent[]): void {
