@@ -3,6 +3,7 @@ import { Logger } from '@nestjs/common';
 import { MarkTodoAsDoneCommand } from '../../domain/commands/mark-todo-as-done.command';
 import { AggregateRehydrator } from '@lib/shared';
 import { Todo } from '../../domain/entities/todo.entity';
+import { TodoMapper } from '../presentation/todo.mapper';
 
 @CommandHandler(MarkTodoAsDoneCommand)
 export class MarkTodoAsDoneCommandHandler {
@@ -16,6 +17,6 @@ export class MarkTodoAsDoneCommandHandler {
 
     todo.commit();
 
-    return todo;
+    return TodoMapper.toDTO(todo);
   }
 }

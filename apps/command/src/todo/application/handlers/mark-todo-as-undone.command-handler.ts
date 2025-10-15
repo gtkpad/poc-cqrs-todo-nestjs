@@ -3,6 +3,7 @@ import { Logger } from '@nestjs/common';
 import { MarkTodoAsUndoneCommand } from '../../domain/commands/mark-todo-as-undone.command';
 import { AggregateRehydrator } from '@lib/shared';
 import { Todo } from '../../domain/entities/todo.entity';
+import { TodoMapper } from '../presentation/todo.mapper';
 
 @CommandHandler(MarkTodoAsUndoneCommand)
 export class MarkTodoAsUndoneCommandHandler {
@@ -18,6 +19,6 @@ export class MarkTodoAsUndoneCommandHandler {
 
     this.logger.log(`Marked todo with id: ${command.id} as undone`);
 
-    return todo;
+    return TodoMapper.toDTO(todo);
   }
 }

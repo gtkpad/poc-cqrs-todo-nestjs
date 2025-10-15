@@ -3,6 +3,7 @@ import { Logger } from '@nestjs/common';
 import { RenameTodoCommand } from '../../domain/commands/rename-todo.command';
 import { AggregateRehydrator } from '@lib/shared/application';
 import { Todo } from '../../domain/entities/todo.entity';
+import { TodoMapper } from '../presentation/todo.mapper';
 
 @CommandHandler(RenameTodoCommand)
 export class RenameTodoCommandHandler {
@@ -19,6 +20,6 @@ export class RenameTodoCommandHandler {
     todo.rename(command.name);
     todo.commit();
 
-    return todo;
+    return TodoMapper.toDTO(todo);
   }
 }
