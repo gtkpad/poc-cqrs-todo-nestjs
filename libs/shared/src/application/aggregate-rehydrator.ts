@@ -25,8 +25,6 @@ export class AggregateRehydrator {
 
     aggregate.loadFromHistory(events);
 
-    aggregate.uncommit();
-
     return aggregate;
   }
 }

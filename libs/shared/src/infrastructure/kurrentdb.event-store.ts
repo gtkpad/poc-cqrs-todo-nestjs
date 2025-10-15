@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import {
   KurrentDBClient,
   ReadStreamOptions,
@@ -13,6 +14,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { EventDeserializer } from './deserializers/event.deserializer';
 import { EventSerializer } from './serializers/event.serializer';
 import { Event } from './schemas/event.schema';
+import { AggregateNotFoundError } from '../domain/errors/aggregate-not-found.error';
+import { AggregateStaleError } from '../domain/errors/aggregate-stale.error';
 
 @Injectable()
 export class KurrentEventStore implements EventStore {
@@ -20,8 +23,8 @@ export class KurrentEventStore implements EventStore {
 
   constructor(
     private readonly client: KurrentDBClient,
-    private readonly eventSerializer: EventSerializer, // transforma SerializableEvent → objeto para gravação
-    private readonly eventDeserializer: EventDeserializer, // transforma do cliente → SerializableEvent
+    private readonly eventSerializer: EventSerializer,
+    private readonly eventDeserializer: EventDeserializer,
   ) {}
 
   async persist(
@@ -41,7 +44,6 @@ export class KurrentEventStore implements EventStore {
 
     try {
       await this.client.appendToStream(streamId, kurrentEvents, {
-        // streamState: 2 as unknown as AppendStreamState,
         streamState:
           expectedVersion !== undefined && expectedVersion >= 0
             ? (expectedVersion as unknown as AppendStreamState)
@@ -51,11 +53,11 @@ export class KurrentEventStore implements EventStore {
     } catch (err) {
       if (err instanceof WrongExpectedVersionError) {
         this.logger.warn(`Version conflict for stream ${streamId}`);
-        throw new Error(`Version conflict for stream ${streamId}`);
 
-        // throw new AggregateStaleException(
-        //   `Aggregate ${streamId} is stale: ${err.message}`,
-        // );
+        throw new AggregateStaleError(
+          `Aggregate ${streamId} is stale: ${err.message}`,
+          streamId,
+        );
       }
       this.logger.error(
         `Error appending events to stream ${streamId}: ${err.message}`,
@@ -79,7 +81,10 @@ export class KurrentEventStore implements EventStore {
       }
     } catch (err) {
       if (err instanceof StreamNotFoundError) {
-        throw new Error(`Aggregate with id ${streamId} does not exist`);
+        throw new AggregateNotFoundError(
+          `Aggregate with id ${streamId} does not exist`,
+          streamId,
+        );
       }
       this.logger.error(`Error reading stream ${streamId}: ${err.message}`);
       throw err;
