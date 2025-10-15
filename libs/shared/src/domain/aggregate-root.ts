@@ -43,13 +43,10 @@ export class AggregateRoot extends NestJSAggregateRoot implements INotifiable {
     return `${name}:${this.id}`;
   }
 
-  public validate(
-    validator: ClassValidatorFields,
-    fields: string[] = [],
-  ): boolean {
+  public validate(validator: ClassValidatorFields): boolean {
     this.clearNotifications();
 
-    this._notification = validator.validate(this, fields);
+    this._notification = validator.validate(this);
 
     return this.isValid;
   }

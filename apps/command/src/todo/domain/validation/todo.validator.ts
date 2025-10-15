@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { ClassValidatorFields } from '@lib/shared/domain/validations/class-validator-fields';
 import { Todo } from '../entities/todo.entity';
 import { Notification } from '@lib/shared';
@@ -33,9 +32,8 @@ export class TodoRules {
 }
 
 export class TodoValidator extends ClassValidatorFields {
-  validate(data: Todo, fields?: string[]): Notification[] {
-    const newFields = fields?.length ? fields : ['name', 'done', 'date'];
-    return super.validate(new TodoRules(data), newFields);
+  validate(data: Todo): Notification[] {
+    return super.validate(new TodoRules(data));
   }
 }
 
